@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
 import type { Expense, AIInsight } from '@/types';
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+// Lazy singleton — instantiated at request time, not at build time
+let openai: OpenAI | null = null;
+function getOpenAI(): OpenAI {
+  if (!openai) {
+    openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  }
+  return openai;
+}
 
 interface InsightRaw {
   type: 'warning' | 'tip' | 'positive';
@@ -63,18 +68,22 @@ Rules:
 - Keep each insight under 120 characters
 - Return ONLY valid JSON — no markdown, no explanation`;
 
-    const message = await anthropic.messages.create({
-      model: 'claude-haiku-4-5-20251001',
+    const completion = await getOpenAI().chat.completions.create({
+      model: 'gpt-4o-mini',
       max_tokens: 512,
-      system:
-        'You are a concise personal finance advisor. You respond ONLY with valid JSON arrays — no markdown fences, no prose.',
-      messages: [{ role: 'user', content: userPrompt }],
+      messages: [
+        {
+          role: 'system',
+          content:
+            'You are a concise personal finance advisor. You respond ONLY with valid JSON arrays — no markdown fences, no prose.',
+        },
+        { role: 'user', content: userPrompt },
+      ],
     });
 
-    const rawText =
-      message.content[0].type === 'text' ? message.content[0].text.trim() : '[]';
+    const rawText = completion.choices[0]?.message?.content?.trim() ?? '[]';
 
-    // Extract JSON even if model wraps it
+    // Extract JSON even if model wraps it in markdown
     const jsonMatch = rawText.match(/\[[\s\S]*\]/);
     const jsonStr = jsonMatch ? jsonMatch[0] : '[]';
     const parsed = JSON.parse(jsonStr) as InsightRaw[];
