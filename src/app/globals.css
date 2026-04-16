@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* ── Glassmorphism card ─────────────────────────────────────────── */
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl;
+  }
+
+  .glass-card-hover {
+    @apply hover:bg-white/[0.08] hover:border-white/20 transition-all duration-300;
+  }
+
+  /* ── Typography ─────────────────────────────────────────────────── */
+  .gradient-text {
+    @apply bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent;
+  }
+
+  /* ── Form controls ──────────────────────────────────────────────── */
+  .input-dark {
+    @apply w-full bg-white/[0.07] border border-white/20 rounded-lg px-3 py-2 text-white
+           placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-indigo-500/60
+           focus:border-indigo-500/40 transition-all text-sm;
+  }
+
+  .input-dark-error {
+    @apply border-red-500/60 focus:ring-red-500/40 focus:border-red-500/40;
+  }
+
+  /* ── Buttons ────────────────────────────────────────────────────── */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-gradient-to-r from-indigo-600 to-purple-600
+           hover:from-indigo-500 hover:to-purple-500
+           text-white text-sm font-medium px-4 py-2 rounded-lg
+           transition-all duration-200 shadow-lg shadow-indigo-500/20
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2
+           bg-white/[0.07] hover:bg-white/[0.12]
+           text-white/80 hover:text-white
+           text-sm font-medium px-4 py-2 rounded-lg
+           border border-white/15 hover:border-white/25
+           transition-all duration-200
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2
+           bg-red-500/15 hover:bg-red-500/25
+           text-red-300 hover:text-red-200
+           text-sm font-medium px-4 py-2 rounded-lg
+           border border-red-500/25 hover:border-red-500/40
+           transition-all duration-200;
+  }
+
+  .btn-icon {
+    @apply inline-flex items-center justify-center
+           w-8 h-8 rounded-lg
+           bg-white/[0.05] hover:bg-white/[0.12]
+           text-white/50 hover:text-white/90
+           border border-white/10 hover:border-white/20
+           transition-all duration-200;
+  }
+}
+
+@layer utilities {
+  /* ── Thin scrollbar ─────────────────────────────────────────────── */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 2px;
+  }
+
+  /* ── Skeleton shimmer ───────────────────────────────────────────── */
+  .skeleton {
+    @apply bg-white/10 rounded-lg animate-pulse;
+  }
+}
+
+/* ── Global resets ────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:focus-visible {
+  outline: 2px solid rgba(99, 102, 241, 0.65);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Date input calendar icon fix on dark backgrounds ──────────── */
+input[type='date']::-webkit-calendar-picker-indicator {
+  filter: invert(0.8);
+  cursor: pointer;
+}
